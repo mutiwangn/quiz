@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.wrangler/
+.env
+.env.*
+!.env.example
+.dev.vars
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/config.local.json
+.impeccable/questions/
+*.tsbuildinfo
+.tools/

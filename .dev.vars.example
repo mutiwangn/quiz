@@ -1,0 +1,8 @@
+# Copy to .dev.vars; never commit live credentials.
+ALLOWED_ORIGIN=http://127.0.0.1:5173
+CATALOG_ENDPOINT=
+CATALOG_BOOK_ID=
+# The gateway contract is documented in docs/service.md.
+# This is not a verified vendor API adapter.
+GATEWAY_URL=
+GATEWAY_TOKEN=
