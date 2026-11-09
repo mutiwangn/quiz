@@ -10,7 +10,7 @@ createServer(async (incoming, outgoing) => {
     let length = 0;
     for await (const chunk of incoming) {
       length += chunk.length;
-      if (length > 16000) { outgoing.writeHead(413); outgoing.end(); return; }
+      if (length > 280000) { outgoing.writeHead(413); outgoing.end(); return; }
       chunks.push(chunk);
     }
     const headers = new Headers();

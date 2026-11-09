@@ -6,19 +6,20 @@ export interface Round {
   id: string; mode: Mode; questions: Question[]; players: Player[];
   startedAt: number; deadline: number | null; endedAt: number | null;
 }
-export interface PlayerScore { id: string; name: string; answered: number; correct: number; accuracy: number | null }
+export interface PlayerScore { id: string; name: string; score: number; answered: number; correct: number; accuracy: number | null }
 export interface RoundSummary {
   id: string; mode: Mode; players: PlayerScore[]; total: number;
   startedAt: number; endedAt: number | null; winnerId: string | null;
 }
 
-export function createRound(config: { id: string; mode: Mode; questions: Question[]; players: string[]; durationMs: number | null }, now: number): Round {
+export const playerName = (mode: Mode, index: number) => mode === 'single' ? '单人练习' : index === 0 ? '左方' : '右方';
+
+export function createRound(config: { id: string; mode: Mode; questions: Question[]; durationMs: number | null }, now: number): Round {
   if (!config.questions.length || new Set(config.questions.map(q => q.id)).size !== config.questions.length
-    || config.players.length !== (config.mode === 'duel' ? 2 : 1) || config.players.some(name => !name.trim())
     || (config.durationMs !== null && (!Number.isFinite(config.durationMs) || config.durationMs <= 0))
     || (config.mode === 'duel' && config.durationMs === null)) throw new Error('对局设置不完整');
   return { id: config.id, mode: config.mode, questions: config.questions,
-    players: config.players.map((name, i) => ({ id: `p${i + 1}`, name, answers: [] })),
+    players: Array.from({ length: config.mode === 'duel' ? 2 : 1 }, (_, i) => ({ id: `p${i + 1}`, name: playerName(config.mode, i), answers: [] })),
     startedAt: now, deadline: config.durationMs === null ? null : now + config.durationMs, endedAt: null };
 }
 
@@ -35,17 +36,31 @@ export function submitAnswer(round: Round, input: { playerId: string; questionId
 export function settleRound(round: Round, now: number): Round {
   if (round.endedAt !== null) return round;
   if (round.deadline !== null && now >= round.deadline) return { ...round, endedAt: round.deadline };
-  if (round.players.every(p => p.answers.length === round.questions.length)) return { ...round, endedAt: now };
+  if (round.mode === 'single' && round.players.every(p => p.answers.length === round.questions.length)) return { ...round, endedAt: now };
   return round;
+}
+
+export function appendQuestions(round: Round, questions: Question[], now: number): Round {
+  round = settleRound(round, now);
+  if (round.mode !== 'duel' || round.endedAt !== null) return round;
+  const ids = new Set(round.questions.map(q => q.id));
+  const prompts = new Set(round.questions.map(q => q.prompt.replace(/\s/g, '')));
+  const fresh = questions.filter(q => {
+    const prompt = q.prompt.replace(/\s/g, '');
+    if (ids.has(q.id) || prompts.has(prompt)) return false;
+    ids.add(q.id); prompts.add(prompt);
+    return true;
+  });
+  return fresh.length ? { ...round, questions: [...round.questions, ...fresh] } : round;
 }
 
 export function summarizeRound(round: Round): RoundSummary {
   const players = round.players.map(p => {
     const correct = p.answers.filter(a => round.questions.find(q => q.id === a.questionId)?.answerId === a.choiceId).length;
-    return { id: p.id, name: p.name, answered: p.answers.length, correct, accuracy: p.answers.length ? correct / p.answers.length : null };
+    return { id: p.id, name: p.name, score: correct, answered: p.answers.length, correct, accuracy: p.answers.length ? correct / p.answers.length : null };
   });
-  const winnerId = round.endedAt !== null && round.mode === 'duel' && players[0].correct !== players[1].correct
-    ? (players[0].correct > players[1].correct ? players[0].id : players[1].id) : null;
+  const winnerId = round.endedAt !== null && round.mode === 'duel' && players[0].score !== players[1].score
+    ? (players[0].score > players[1].score ? players[0].id : players[1].id) : null;
   return { id: round.id, mode: round.mode, players, total: round.questions.length,
     startedAt: round.startedAt, endedAt: round.endedAt, winnerId };
 }

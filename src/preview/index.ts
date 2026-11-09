@@ -26,7 +26,7 @@ const questions: Question[] = rows.map(([id, lessonId, prompt, options, correct,
 
 export { previewCatalog };
 export async function previewBatch(request: BatchRequest): Promise<QuestionBatch> {
-  const matches = questions.filter(q => q.lessonIds.some(id => request.lessonIds.includes(id)) && request.kinds.includes(q.kind));
+  const matches = questions.filter(q => !request.excludeIds?.includes(q.id) && q.lessonIds.some(id => request.lessonIds.includes(id)) && request.kinds.includes(q.kind));
   if (matches.length < request.count) throw new Error(`所选范围只有 ${matches.length} 道开发样题，请减少题数或选择“感受空气”等预览课时。`);
   for (let i = matches.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [matches[i], matches[j]] = [matches[j], matches[i]]; }
   return validateBatch({ id: crypto.randomUUID(), catalogId: previewCatalog.id, questions: matches.slice(0, request.count), preparedAt: new Date().toISOString(), origin: 'preview' }, request, previewCatalog);

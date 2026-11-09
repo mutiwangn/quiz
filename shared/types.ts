@@ -30,6 +30,7 @@ export interface BatchRequest {
   lessonIds: string[];
   kinds: QuestionKind[];
   count: number;
+  excludeIds?: string[];
 }
 export interface QuestionBatch {
   id: string;

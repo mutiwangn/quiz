@@ -50,7 +50,7 @@ export async function checkCoverage(base: string, options: Options = {}): Promis
           }
           if (!result.ok) {
             check.code = raw.error?.code ?? `HTTP_${result.status}`;
-            if (['SOURCE_NOT_CONFIGURED', 'ACCESS_REQUIRED', 'QUOTA_EXHAUSTED'].includes(check.code)) blocked = check.code;
+            if (['SOURCE_NOT_CONFIGURED', 'ACCESS_REQUIRED', 'QUOTA_EXHAUSTED', 'SOURCE_TEXT_INCOMPLETE', 'SOURCE_ACCOUNT_LOCKED'].includes(check.code)) blocked = check.code;
             break;
           }
           const batch = validateBatch(raw, request, catalog);

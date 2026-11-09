@@ -87,6 +87,8 @@ a { color: var(--blue); text-underline-offset: .2em; }
 .primary-button:hover:not(:disabled) { background: #e9a329; }
 .prepare-sheet > .primary-button { width: 100%; margin-top: 28px; }
 .prepare-note, .device-note { font-size: 13px; color: var(--muted); margin-top: 18px; }
+.continuation-status { margin: 0 0 24px; padding: 14px 18px; background: #eef1f7; color: var(--navy); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; font-size: 14px; border-radius: 8px; }
+.continuation-status p { flex: 1; min-width: 180px; }
 .cancel-prepare { width: 100%; }
 .device-note { padding: 0 12px; }
 .error-message { background: #fff0ed; color: #9b3025; padding: 12px; font-size: 14px; line-height: 1.7; border-radius: 8px; margin-top: 20px; overflow-wrap: anywhere; }

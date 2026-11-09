@@ -2,7 +2,7 @@ import { ArrowRight, CheckCircle, Users, User } from '@phosphor-icons/react';
 import type { Catalog, Mode, QuestionKind } from '../shared/types';
 import { selectedLessonNames } from '../shared/catalog';
 
-export interface Settings { mode: Mode; count: number; kinds: QuestionKind[]; players: [string, string]; seconds: number }
+export interface Settings { mode: Mode; count: number; kinds: QuestionKind[]; seconds: number }
 interface Props {
   catalog: Catalog; selected: string[]; unitId: string; settings: Settings;
   setSelected: (ids: string[]) => void; setUnitId: (id: string) => void; setSettings: (settings: Settings) => void;
@@ -52,15 +52,14 @@ export default function Setup({ catalog, selected, unitId, settings, setSelected
           <button type="button" aria-pressed={settings.mode === 'duel'} onClick={() => update({ mode: 'duel' })}><Users size={20} aria-hidden="true" />双人竞速</button>
         </div></fieldset>
         <fieldset disabled={busy} className="settings-fields">
-          <div className="setting-field"><label htmlFor="question-count">题目数量</label><select id="question-count" value={settings.count} onChange={e => update({ count: Number(e.target.value) })}>{[5, 10, 15, 20, 30].map(n => <option key={n} value={n}>{n} 题</option>)}</select></div>
+          {settings.mode === 'single' && <div className="setting-field"><label htmlFor="question-count">题目数量</label><select id="question-count" value={settings.count} onChange={e => update({ count: Number(e.target.value) })}>{[5, 10, 15, 20, 30].map(n => <option key={n} value={n}>{n} 题</option>)}</select></div>}
           <div className="type-options"><span className="field-label">题型</span>{(['single', 'boolean'] as const).map(kind => <label key={kind}><input type="checkbox" checked={settings.kinds.includes(kind)} onChange={() => update({ kinds: settings.kinds.includes(kind) ? settings.kinds.filter(k => k !== kind) : [...settings.kinds, kind] })} />{kind === 'single' ? '单选题' : '判断题'}</label>)}</div>
-          <label>{settings.mode === 'single' ? '你的昵称' : '左侧玩家'}<input maxLength={12} value={settings.players[0]} onChange={e => update({ players: [e.target.value, settings.players[1]] })} placeholder="输入昵称" required /></label>
-          {settings.mode === 'duel' && <><label>右侧玩家<input maxLength={12} value={settings.players[1]} onChange={e => update({ players: [settings.players[0], e.target.value] })} placeholder="输入昵称" required /></label><div className="setting-field"><label htmlFor="duration">竞速时长</label><select id="duration" value={settings.seconds} onChange={e => update({ seconds: Number(e.target.value) })}>{[60, 120, 180, 300].map(n => <option value={n} key={n}>{n / 60} 分钟</option>)}</select></div></>}
+          {settings.mode === 'duel' && <div className="setting-field"><label htmlFor="duration">竞速时长</label><select id="duration" value={settings.seconds} onChange={e => update({ seconds: Number(e.target.value) })}>{[60, 120, 180, 300].map(n => <option value={n} key={n}>{n / 60} 分钟</option>)}</select></div>}
         </fieldset>
         {error && <div className="error-message" role="alert">{error}</div>}
         <button className="primary-button" type="submit" disabled={busy || !selected.length || !settings.kinds.length}>{busy ? '正在准备题目…' : settings.mode === 'single' ? '开始练习' : '准备对战'}{!busy && <ArrowRight size={20} aria-hidden="true" />}</button>
         {busy && <button className="text-button cancel-prepare" type="button" onClick={onCancel}>取消准备</button>}
-        <p className="prepare-note">{settings.mode === 'single' ? '不限时，提交后可查看解析。' : '同一组题，独立作答。答对数相同为平局。'}<br />题目和图片加载完后再开始。</p>
+        <p className="prepare-note">{settings.mode === 'single' ? '不限时，提交后可查看解析。' : '左方、右方独立作答，限时比总分。答对 +1，答错不扣分，同分平局。'}<br />题目和图片加载完后再开始。</p>
       </form>
       <p className="device-note">{settings.mode === 'duel' ? '推荐电脑或 iPad 横屏，支持同时触控。' : '成绩保存在当前浏览器。'}</p>
     </aside>

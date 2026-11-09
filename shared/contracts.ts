@@ -23,6 +23,7 @@ export const batchRequestSchema = z.object({
   catalogId: id, lessonIds: z.array(id).min(1).max(24).refine(unique),
   kinds: z.array(z.enum(['single', 'boolean'])).min(1).max(2).refine(unique),
   count: z.number().int().min(1).max(30),
+  excludeIds: z.array(id).max(1000).refine(unique).optional(),
 });
 export const batchSchema = z.object({
   id, catalogId: id, questions: z.array(questionSchema).min(1).max(30),
@@ -33,10 +34,11 @@ export function validateBatch(raw: unknown, request: BatchRequest, catalog: Cata
   const batch = batchSchema.parse(raw);
   const allowed = new Set(request.lessonIds);
   const known = new Set(catalog.units.flatMap(u => u.lessons.map(l => l.id)));
+  const excluded = new Set(request.excludeIds ?? []);
   if (batch.catalogId !== request.catalogId || batch.questions.length !== request.count
     || !unique(batch.questions.map(q => q.id)) || !unique(batch.questions.map(q => q.prompt.replace(/\s/g, '')))
     || request.lessonIds.some(id => !known.has(id))
-    || batch.questions.some(q => !q.lessonIds.some(id => allowed.has(id)) || q.lessonIds.some(id => !known.has(id)) || !request.kinds.includes(q.kind))) {
+    || batch.questions.some(q => excluded.has(q.id) || !q.lessonIds.some(id => allowed.has(id)) || q.lessonIds.some(id => !known.has(id)) || !request.kinds.includes(q.kind))) {
     throw new Error('题包范围、数量或去重校验失败');
   }
   return batch;

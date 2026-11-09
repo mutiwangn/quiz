@@ -50,6 +50,19 @@ describe('取题 HTTP 服务', () => {
     const fetcher: typeof fetch = async input => Response.json(String(input).endsWith('/catalog') ? catalog : { id: 'batch', catalogId: 'book', origin: 'live', preparedAt: '2026-11-09T00:00:00Z', questions: [question, question] });
     expect((await createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test' }, fetcher).fetch(request)).status).toBe(502);
   });
+  it('续题请求传递本局已有题号，拒收被排除的旧题', async () => {
+    const request = () => new Request('https://api.test/api/batches', { method: 'POST', body: JSON.stringify({ catalogId: 'book', lessonIds: ['l1'], kinds: ['single'], count: 1, excludeIds: ['q1'] }) });
+    let returned = { ...question, id: 'q2' };
+    const fetcher: typeof fetch = async (input, init) => {
+      if (String(input).endsWith('/catalog')) return Response.json(catalog);
+      expect(JSON.parse(String(init?.body))).toMatchObject({ excludeIds: ['q1'] });
+      return Response.json({ id: 'batch', catalogId: 'book', origin: 'live', preparedAt: '2026-11-09T00:00:00Z', questions: [returned] });
+    };
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test' }, fetcher);
+    expect((await service.fetch(request())).status).toBe(200);
+    returned = question;
+    expect((await service.fetch(request())).status).toBe(502);
+  });
   it('超时返回可重试错误，不返回原始异常', async () => {
     const fetcher: typeof fetch = async () => { throw new DOMException('private upstream details', 'TimeoutError'); };
     const response = await createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test' }, fetcher).fetch(batchRequest());
@@ -72,5 +85,61 @@ describe('取题 HTTP 服务', () => {
     expect(response.status).toBe(429);
     expect(await response.json()).toMatchObject({ error: { code: 'RATE_LIMITED' } });
     expect(calls).toBe(0);
+  });
+  it('使用服务端登录状态按课时取真实网页，解析单选和判断并生成稳定题号', async () => {
+    const requests: URL[] = [];
+    let render = 0;
+    const fetcher: typeof fetch = async (input, init) => {
+      const url = new URL(String(input));
+      if (url.pathname.endsWith('/catalog')) return Response.json(catalog);
+      requests.push(url);
+      expect(new Headers(init?.headers).get('Cookie')).toBe('session=test-session');
+      expect(url.searchParams.get('q')).toBe('l1');
+      const stem = url.searchParams.get('ct') === '4'
+        ? '<fieldset class="quesborder" id="valid-render-id" data-cate="4"><div class="pt1"><span class="qseq">1．</span>空气存在于周围。<div class="quizPutTag"></div><div class="sanwser">√</div>（判断对错）</div></fieldset>'
+        : `<fieldset class="quesborder" id="render-${++render}" data-cate="1"><div class="pt1"><span class="qseq">1．</span><a class="ques-source">（某地期末）</a>空气通常是什么颜色的？</div><div class="pt2"><table><tr><td class="selectoption"><label class=" s">A．无色</label></td><td class="selectoption"><label>B．蓝色</label></td></tr></table></div></fieldset>`;
+      return new Response(stem);
+    };
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/partialques', SOURCE_SESSION_COOKIE: 'session=test-session' }, fetcher);
+    const request = (kind: string) => new Request('https://api.test/api/batches', { method: 'POST', body: JSON.stringify({ catalogId: 'book', lessonIds: ['l1'], kinds: [kind], count: 1 }) });
+    const single = await service.fetch(request('single'));
+    expect(single.status).toBe(200);
+    const data = await single.json();
+    expect(data).toMatchObject({ origin: 'live', questions: [{ prompt: '空气通常是什么颜色的？', answerId: 'a', lessonIds: ['l1'] }] });
+    expect((await (await service.fetch(request('single'))).json()).questions[0].id).toBe(data.questions[0].id);
+    const boolean = await service.fetch(request('boolean'));
+    expect(await boolean.json()).toMatchObject({ questions: [{ kind: 'boolean', answerId: 'true', choices: [{ id: 'true', text: '正确' }, { id: 'false', text: '错误' }] }] });
+    expect(requests.map(url => url.searchParams.get('ct'))).toEqual(['1', '1', '4']);
+    expect(JSON.stringify(data)).not.toContain('test-session');
+  });
+  it('列表缺字时只使用可正常查看的完整解析页，不用残缺题干出题', async () => {
+    const exercise = (prompt: string) => `<fieldset class="quesborder" id="valid-question" data-cate="1"><div class="pt1">${prompt}</div><div class="pt2"><table><tr><td class="selectoption"><label class="s">A．无色</label></td><td class="selectoption"><label>B．蓝色</label></td></tr></table></div></fieldset>`;
+    const requests: string[] = [];
+    const fetcher: typeof fetch = async input => {
+      const url = new URL(String(input)); requests.push(url.pathname);
+      if (url.pathname === '/catalog') return Response.json(catalog);
+      if (url.pathname === '/ques/detail/valid-question') return new Response(exercise('空气通常是什么颜色的？').replace('</fieldset>', '<div class="pt11">【答案】A</div><div class="pt6">【解答】通常的空气无色透明。</div></fieldset>'));
+      return new Response(`<li>${exercise('空气是颜色的？')}<div class="fieldtip"><a href="/ques/detail/valid-question">解析</a></div></li><script>if ('True' == 'True') { $("#divConfuseTips").show(); }</script>`);
+    };
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/ques/partialques', SOURCE_SESSION_COOKIE: 'session=test' }, fetcher);
+    const result = await service.fetch(batchRequest());
+    expect(result.status).toBe(200);
+    expect(await result.json()).toMatchObject({ questions: [{ prompt: '空气通常是什么颜色的？', answerId: 'a', explanation: '【解答】通常的空气无色透明。' }] });
+    expect(requests).toEqual(['/catalog', '/ques/partialques', '/ques/detail/valid-question']);
+  });
+  it('检测到账号锁定后停止后续取题请求，不反复访问源站', async () => {
+    let sourceCalls = 0;
+    const fetcher: typeof fetch = async input => {
+      if (String(input).endsWith('/catalog')) return Response.json(catalog);
+      sourceCalls++;
+      return new Response('您的账号已被锁定，请联系客服。');
+    };
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/ques/partialques', SOURCE_SESSION_COOKIE: 'session=test' }, fetcher);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await service.fetch(batchRequest());
+      expect(response.status).toBe(503);
+      expect(await response.json()).toMatchObject({ error: { code: 'SOURCE_ACCOUNT_LOCKED' } });
+    }
+    expect(sourceCalls).toBe(1);
   });
 });
