@@ -27,6 +27,8 @@
 
 机械界面检测运行一次，结果为空。未取得外部 QUALITY BAR 图像，因此外部风格上限未被校准。
 
+独立文档整理者已根据实际代码生成 DESIGN.md 与 `.impeccable/design.json`，验证令牌引用、规范章节和 sidecar 格式。未修改已有构建路径偏好配置。
+
 ## Verification
 
 - 18 项单元、HTTP 与覆盖检查测试通过。

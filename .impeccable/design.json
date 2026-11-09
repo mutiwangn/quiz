@@ -1,0 +1,544 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-09T10:59:39.728Z",
+  "title": "Design System: Quiz 科学答题",
+  "extensions": {
+    "colorMeta": {
+      "navy": {
+        "role": "primary",
+        "displayName": "课堂深蓝",
+        "tonalRamp": [
+          "oklch(15% 0.0228 260.5)",
+          "oklch(26% 0.0449 260.5)",
+          "oklch(38% 0.0623 260.5)",
+          "oklch(50% 0.0700 260.5)",
+          "oklch(62% 0.0668 260.5)",
+          "oklch(74% 0.0532 260.5)",
+          "oklch(85% 0.0334 260.5)",
+          "oklch(95% 0.0116 260.5)"
+        ]
+      },
+      "blue": {
+        "role": "secondary",
+        "displayName": "作答蓝",
+        "tonalRamp": [
+          "oklch(15% 0.0637 264.1)",
+          "oklch(26% 0.1255 264.1)",
+          "oklch(38% 0.1739 264.1)",
+          "oklch(50% 0.1954 264.1)",
+          "oklch(62% 0.1864 264.1)",
+          "oklch(74% 0.1485 264.1)",
+          "oklch(85% 0.0933 264.1)",
+          "oklch(95% 0.0323 264.1)"
+        ]
+      },
+      "orange": {
+        "role": "primary",
+        "displayName": "行动暖橙",
+        "tonalRamp": [
+          "oklch(15% 0.0467 78.2)",
+          "oklch(26% 0.0921 78.2)",
+          "oklch(38% 0.1276 78.2)",
+          "oklch(50% 0.1434 78.2)",
+          "oklch(62% 0.1368 78.2)",
+          "oklch(74% 0.1090 78.2)",
+          "oklch(85% 0.0685 78.2)",
+          "oklch(95% 0.0237 78.2)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "说明灰蓝",
+        "tonalRamp": [
+          "oklch(15% 0.0132 260.3)",
+          "oklch(26% 0.0260 260.3)",
+          "oklch(38% 0.0361 260.3)",
+          "oklch(50% 0.0406 260.3)",
+          "oklch(62% 0.0387 260.3)",
+          "oklch(74% 0.0308 260.3)",
+          "oklch(85% 0.0194 260.3)",
+          "oklch(95% 0.0067 260.3)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "雾蓝分隔",
+        "tonalRamp": [
+          "oklch(15% 0.0047 254.6)",
+          "oklch(26% 0.0092 254.6)",
+          "oklch(38% 0.0128 254.6)",
+          "oklch(50% 0.0144 254.6)",
+          "oklch(62% 0.0137 254.6)",
+          "oklch(74% 0.0109 254.6)",
+          "oklch(85% 0.0069 254.6)",
+          "oklch(95% 0.0024 254.6)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "深墨正文",
+        "tonalRamp": [
+          "oklch(15% 0.0141 256.0)",
+          "oklch(26% 0.0277 256.0)",
+          "oklch(38% 0.0385 256.0)",
+          "oklch(50% 0.0432 256.0)",
+          "oklch(62% 0.0412 256.0)",
+          "oklch(74% 0.0328 256.0)",
+          "oklch(85% 0.0206 256.0)",
+          "oklch(95% 0.0071 256.0)"
+        ]
+      },
+      "cool-white": {
+        "role": "neutral",
+        "displayName": "冷白画布",
+        "tonalRamp": [
+          "oklch(15% 0.0020 255.5)",
+          "oklch(26% 0.0040 255.5)",
+          "oklch(38% 0.0055 255.5)",
+          "oklch(50% 0.0062 255.5)",
+          "oklch(62% 0.0059 255.5)",
+          "oklch(74% 0.0047 255.5)",
+          "oklch(85% 0.0030 255.5)",
+          "oklch(95% 0.0010 255.5)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "工作白",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0.0)",
+          "oklch(26% 0.0000 0.0)",
+          "oklch(38% 0.0000 0.0)",
+          "oklch(50% 0.0000 0.0)",
+          "oklch(62% 0.0000 0.0)",
+          "oklch(74% 0.0000 0.0)",
+          "oklch(85% 0.0000 0.0)",
+          "oklch(95% 0.0000 0.0)"
+        ]
+      },
+      "action-ink": {
+        "role": "primary",
+        "displayName": "行动深棕",
+        "tonalRamp": [
+          "oklch(15% 0.0126 74.5)",
+          "oklch(26% 0.0248 74.5)",
+          "oklch(38% 0.0343 74.5)",
+          "oklch(50% 0.0386 74.5)",
+          "oklch(62% 0.0368 74.5)",
+          "oklch(74% 0.0293 74.5)",
+          "oklch(85% 0.0184 74.5)",
+          "oklch(95% 0.0064 74.5)"
+        ]
+      },
+      "orange-hover": {
+        "role": "primary",
+        "displayName": "行动悬停橙",
+        "tonalRamp": [
+          "oklch(15% 0.0487 75.4)",
+          "oklch(26% 0.0959 75.4)",
+          "oklch(38% 0.1330 75.4)",
+          "oklch(50% 0.1494 75.4)",
+          "oklch(62% 0.1426 75.4)",
+          "oklch(74% 0.1136 75.4)",
+          "oklch(85% 0.0714 75.4)",
+          "oklch(95% 0.0247 75.4)"
+        ]
+      },
+      "mode-rest": {
+        "role": "neutral",
+        "displayName": "方式浅底",
+        "tonalRamp": [
+          "oklch(15% 0.0028 264.5)",
+          "oklch(26% 0.0055 264.5)",
+          "oklch(38% 0.0077 264.5)",
+          "oklch(50% 0.0086 264.5)",
+          "oklch(62% 0.0082 264.5)",
+          "oklch(74% 0.0066 264.5)",
+          "oklch(85% 0.0041 264.5)",
+          "oklch(95% 0.0014 264.5)"
+        ]
+      },
+      "nav-hover": {
+        "role": "neutral",
+        "displayName": "导航悬停蓝",
+        "tonalRamp": [
+          "oklch(15% 0.0228 259.5)",
+          "oklch(26% 0.0449 259.5)",
+          "oklch(38% 0.0622 259.5)",
+          "oklch(50% 0.0699 259.5)",
+          "oklch(62% 0.0667 259.5)",
+          "oklch(74% 0.0532 259.5)",
+          "oklch(85% 0.0334 259.5)",
+          "oklch(95% 0.0115 259.5)"
+        ]
+      },
+      "field-border": {
+        "role": "neutral",
+        "displayName": "表单边框",
+        "tonalRamp": [
+          "oklch(15% 0.0085 255.6)",
+          "oklch(26% 0.0167 255.6)",
+          "oklch(38% 0.0232 255.6)",
+          "oklch(50% 0.0261 255.6)",
+          "oklch(62% 0.0249 255.6)",
+          "oklch(74% 0.0198 255.6)",
+          "oklch(85% 0.0124 255.6)",
+          "oklch(95% 0.0043 255.6)"
+        ]
+      },
+      "secondary-border": {
+        "role": "neutral",
+        "displayName": "次要操作边框",
+        "tonalRamp": [
+          "oklch(15% 0.0107 255.6)",
+          "oklch(26% 0.0212 255.6)",
+          "oklch(38% 0.0293 255.6)",
+          "oklch(50% 0.0330 255.6)",
+          "oklch(62% 0.0315 255.6)",
+          "oklch(74% 0.0251 255.6)",
+          "oklch(85% 0.0157 255.6)",
+          "oklch(95% 0.0054 255.6)"
+        ]
+      },
+      "focus": {
+        "role": "secondary",
+        "displayName": "键盘聚焦蓝",
+        "tonalRamp": [
+          "oklch(15% 0.0580 262.3)",
+          "oklch(26% 0.1142 262.3)",
+          "oklch(38% 0.1584 262.3)",
+          "oklch(50% 0.1779 262.3)",
+          "oklch(62% 0.1697 262.3)",
+          "oklch(74% 0.1352 262.3)",
+          "oklch(85% 0.0849 262.3)",
+          "oklch(95% 0.0294 262.3)"
+        ]
+      },
+      "preview-fill": {
+        "role": "neutral",
+        "displayName": "开发提示浅黄",
+        "tonalRamp": [
+          "oklch(15% 0.0156 88.8)",
+          "oklch(26% 0.0307 88.8)",
+          "oklch(38% 0.0426 88.8)",
+          "oklch(50% 0.0478 88.8)",
+          "oklch(62% 0.0456 88.8)",
+          "oklch(74% 0.0363 88.8)",
+          "oklch(85% 0.0228 88.8)",
+          "oklch(95% 0.0079 88.8)"
+        ]
+      },
+      "preview-ink": {
+        "role": "neutral",
+        "displayName": "开发提示深棕",
+        "tonalRamp": [
+          "oklch(15% 0.0266 72.8)",
+          "oklch(26% 0.0525 72.8)",
+          "oklch(38% 0.0728 72.8)",
+          "oklch(50% 0.0817 72.8)",
+          "oklch(62% 0.0780 72.8)",
+          "oklch(74% 0.0621 72.8)",
+          "oklch(85% 0.0390 72.8)",
+          "oklch(95% 0.0135 72.8)"
+        ]
+      },
+      "player-orange": {
+        "role": "secondary",
+        "displayName": "同伴赭橙",
+        "tonalRamp": [
+          "oklch(15% 0.0338 64.8)",
+          "oklch(26% 0.0666 64.8)",
+          "oklch(38% 0.0923 64.8)",
+          "oklch(50% 0.1037 64.8)",
+          "oklch(62% 0.0989 64.8)",
+          "oklch(74% 0.0788 64.8)",
+          "oklch(85% 0.0495 64.8)",
+          "oklch(95% 0.0171 64.8)"
+        ]
+      },
+      "player-orange-progress": {
+        "role": "secondary",
+        "displayName": "同伴进度橙",
+        "tonalRamp": [
+          "oklch(15% 0.0434 69.6)",
+          "oklch(26% 0.0855 69.6)",
+          "oklch(38% 0.1185 69.6)",
+          "oklch(50% 0.1331 69.6)",
+          "oklch(62% 0.1271 69.6)",
+          "oklch(74% 0.1012 69.6)",
+          "oklch(85% 0.0636 69.6)",
+          "oklch(95% 0.0220 69.6)"
+        ]
+      },
+      "success": {
+        "role": "secondary",
+        "displayName": "完成绿",
+        "tonalRamp": [
+          "oklch(15% 0.0310 162.7)",
+          "oklch(26% 0.0612 162.7)",
+          "oklch(38% 0.0848 162.7)",
+          "oklch(50% 0.0953 162.7)",
+          "oklch(62% 0.0909 162.7)",
+          "oklch(74% 0.0725 162.7)",
+          "oklch(85% 0.0455 162.7)",
+          "oklch(95% 0.0157 162.7)"
+        ]
+      },
+      "success-fill": {
+        "role": "secondary",
+        "displayName": "正确浅绿",
+        "tonalRamp": [
+          "oklch(15% 0.0051 154.5)",
+          "oklch(26% 0.0100 154.5)",
+          "oklch(38% 0.0139 154.5)",
+          "oklch(50% 0.0156 154.5)",
+          "oklch(62% 0.0149 154.5)",
+          "oklch(74% 0.0119 154.5)",
+          "oklch(85% 0.0075 154.5)",
+          "oklch(95% 0.0026 154.5)"
+        ]
+      },
+      "success-border": {
+        "role": "secondary",
+        "displayName": "正确绿边",
+        "tonalRamp": [
+          "oklch(15% 0.0360 156.5)",
+          "oklch(26% 0.0709 156.5)",
+          "oklch(38% 0.0983 156.5)",
+          "oklch(50% 0.1104 156.5)",
+          "oklch(62% 0.1053 156.5)",
+          "oklch(74% 0.0839 156.5)",
+          "oklch(85% 0.0527 156.5)",
+          "oklch(95% 0.0182 156.5)"
+        ]
+      },
+      "error": {
+        "role": "secondary",
+        "displayName": "错误深红",
+        "tonalRamp": [
+          "oklch(15% 0.0468 29.4)",
+          "oklch(26% 0.0923 29.4)",
+          "oklch(38% 0.1280 29.4)",
+          "oklch(50% 0.1437 29.4)",
+          "oklch(62% 0.1372 29.4)",
+          "oklch(74% 0.1093 29.4)",
+          "oklch(85% 0.0686 29.4)",
+          "oklch(95% 0.0237 29.4)"
+        ]
+      },
+      "error-fill": {
+        "role": "secondary",
+        "displayName": "错误浅红",
+        "tonalRamp": [
+          "oklch(15% 0.0054 31.1)",
+          "oklch(26% 0.0107 31.1)",
+          "oklch(38% 0.0149 31.1)",
+          "oklch(50% 0.0167 31.1)",
+          "oklch(62% 0.0160 31.1)",
+          "oklch(74% 0.0127 31.1)",
+          "oklch(85% 0.0080 31.1)",
+          "oklch(95% 0.0028 31.1)"
+        ]
+      },
+      "selected-answer": {
+        "role": "secondary",
+        "displayName": "已选答案浅蓝",
+        "tonalRamp": [
+          "oklch(15% 0.0088 267.5)",
+          "oklch(26% 0.0173 267.5)",
+          "oklch(38% 0.0240 267.5)",
+          "oklch(50% 0.0270 267.5)",
+          "oklch(62% 0.0258 267.5)",
+          "oklch(74% 0.0205 267.5)",
+          "oklch(85% 0.0129 267.5)",
+          "oklch(95% 0.0045 267.5)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "页面标题",
+        "purpose": "功能页面标题，随视口缩放；没有独立装饰字族。"
+      },
+      "title": {
+        "displayName": "区域标题",
+        "purpose": "白色工作区域和内容分组。"
+      },
+      "body": {
+        "displayName": "正文",
+        "purpose": "中文说明与阅读内容。"
+      },
+      "label": {
+        "displayName": "字段标签",
+        "purpose": "表单名称与辅助标识。"
+      },
+      "question": {
+        "displayName": "题干",
+        "purpose": "宽松行高的作答主内容。"
+      },
+      "action": {
+        "displayName": "主要行动",
+        "purpose": "暖橙色下一步按钮。"
+      },
+      "timer": {
+        "displayName": "计时",
+        "purpose": "剩余时间，搭配等宽数字特性。"
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "button-state",
+        "value": "background-color 160ms ease-out, color 160ms ease-out",
+        "purpose": "按钮只对背景色和文字颜色作短过渡。"
+      },
+      {
+        "name": "surface-arrive",
+        "value": "160ms cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "页面状态淡入，透明度从 0.8 到 1。"
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "prefers-reduced-motion: reduce 时停止按钮过渡与页面状态动画。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-desktop-max",
+        "value": "1250px"
+      },
+      {
+        "name": "tablet-max",
+        "value": "1000px"
+      },
+      {
+        "name": "mobile-max",
+        "value": "650px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "主要按钮",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "暖橙色下一步行动，适合触控与键盘。",
+      "html": "<button type=\"button\" class=\"ds-primary\">开始练习</button>",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--orange,#f4b545);color:#30220e;min-height:54px;border:0;border-radius:10px;padding:14px 22px;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out;}.ds-primary:hover:not(:disabled){background:#e9a329}.ds-primary:focus-visible{outline:3px solid #376edc;outline-offset:4px;}.ds-primary:disabled{opacity:.55;cursor:default}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}}"
+    },
+    {
+      "name": "次要按钮",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "透明描边操作，供返回、调整和次要任务使用。",
+      "html": "<button type=\"button\" class=\"ds-secondary\">调整课时</button>",
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:1px solid #a9b8cc;border-radius:8px;padding:11px 16px;color:var(--navy,#1c3155);background:transparent;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:15px;cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out;}.ds-secondary:hover:not(:disabled){background:#e5ecf6}.ds-secondary:focus-visible{outline:3px solid #376edc;outline-offset:4px;}.ds-secondary:disabled{opacity:.55;cursor:default}@media(prefers-reduced-motion:reduce){.ds-secondary{transition:none}}"
+    },
+    {
+      "name": "文字按钮",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "列表内的选择管理与返回操作。",
+      "html": "<button type=\"button\" class=\"ds-text\">全选本单元</button>",
+      "css": ".ds-text{color:var(--blue,#2454ce);border:0;background:transparent;padding:10px 2px;min-height:44px;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out;}.ds-text:hover{color:#183c9b;text-decoration:underline;text-underline-offset:.2em}.ds-text:focus-visible{outline:3px solid #376edc;outline-offset:4px;}.ds-text:disabled{opacity:.55;cursor:default}@media(prefers-reduced-motion:reduce){.ds-text{transition:none}}"
+    },
+    {
+      "name": "昵称输入",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "带关联标签的原生文字输入；选择框沿用同样的轮廓。",
+      "html": "<label class=\"ds-field\" for=\"ds-nickname\">你的昵称<input class=\"ds-input\" id=\"ds-nickname\" value=\"小蓝\" placeholder=\"输入昵称\" maxlength=\"12\"></label>",
+      "css": ".ds-field{display:grid;gap:9px;color:var(--muted,#56647b);font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:14px}.ds-input{width:100%;min-height:46px;padding:10px 12px;border:1px solid #b7c3d3;border-radius:8px;color:#142337;background:#fff;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:16px;caret-color:var(--blue,#2454ce)}.ds-input::placeholder{color:#66748a}.ds-input:focus-visible{outline:3px solid #376edc;outline-offset:4px;}"
+    },
+    {
+      "name": "主导航",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "深蓝顶栏以白字和暖橙底边共同表示当前页面。示例采用窄屏同样存在的文字导航。",
+      "html": "<nav class=\"ds-nav\" aria-label=\"主导航\"><button type=\"button\" class=\"ds-nav-item\" aria-current=\"page\">开始练习</button><button type=\"button\" class=\"ds-nav-item\">本机成绩</button></nav>",
+      "css": ".ds-nav{display:flex;gap:12px;min-height:96px;padding:0 16px;background:var(--navy,#1c3155);color:#fff}.ds-nav-item{display:flex;align-items:center;gap:8px;background:none;color:#cbd7e9;border:0;border-bottom:3px solid transparent;padding:0 16px;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:17px;cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out;}.ds-nav-item[aria-current=\"page\"]{border-bottom-color:var(--orange,#f4b545);color:#fff;font-weight:600}.ds-nav-item:hover{background:#2a4166}.ds-nav-item:focus-visible{outline:3px solid var(--orange,#f4b545);outline-offset:4px}@media(max-width:650px){.ds-nav{min-height:78px;gap:0}.ds-nav-item{font-size:14px;padding:0 10px}}@media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none}}"
+    },
+    {
+      "name": "开发样题标签",
+      "kind": "chip",
+      "refersTo": "preview-tag",
+      "description": "历史记录中明确说明当前记录来自开发样题。",
+      "html": "<span class=\"ds-preview-tag\">开发样题</span>",
+      "css": ".ds-preview-tag{display:inline-block;color:#714d12;background:#fff1ce;border-radius:5px;padding:4px 8px;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:11px}"
+    },
+    {
+      "name": "白色工作区域",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "设置和内容的平面容器；通过白色与冷白画布分区。",
+      "html": "<section class=\"ds-sheet\" aria-labelledby=\"ds-sheet-heading\"><h2 class=\"ds-sheet-title\" id=\"ds-sheet-heading\">准备开始</h2><p class=\"ds-sheet-copy\">不限时，提交后可查看解析。</p></section>",
+      "css": ".ds-sheet{background:#fff;border-radius:16px;padding:26px 24px;color:#142337;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif}.ds-sheet-title{margin:0 0 24px;font-size:22px;font-weight:700;line-height:1.4}.ds-sheet-copy{margin:0;color:var(--muted,#56647b);font-size:13px;line-height:1.75}"
+    },
+    {
+      "name": "课时选择行",
+      "kind": "custom",
+      "refersTo": "lesson-row",
+      "description": "原生复选框与整行标签，选中以勾选和加粗共同表达。",
+      "html": "<label class=\"ds-lesson ds-lesson-selected\"><input class=\"ds-checkbox\" type=\"checkbox\" checked><span class=\"ds-index\">1</span><span>感受空气</span></label>",
+      "css": ".ds-lesson{display:flex;align-items:center;gap:14px;padding:18px 8px;border-bottom:1px solid #e7ecf2;cursor:pointer;color:#142337;background:#fff;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:18px;line-height:1.6;min-height:70px}.ds-lesson:hover{background:#f4f7fb}.ds-lesson-selected{color:var(--navy,#1c3155);font-weight:600}.ds-checkbox{accent-color:var(--navy,#1c3155);width:23px;height:23px;margin:0;flex-shrink:0}.ds-checkbox:focus-visible{outline:3px solid #376edc;outline-offset:4px;}.ds-index{color:#5c6c84;font-size:13px;width:13px;font-weight:400;flex-shrink:0;font-variant-numeric:tabular-nums}@media(max-width:650px){.ds-lesson{font-size:17px;min-height:64px;padding-inline:2px}}"
+    },
+    {
+      "name": "练习方式选择",
+      "kind": "custom",
+      "refersTo": "mode",
+      "description": "并排的互斥方式按钮以实底与 aria-pressed 表达选择。",
+      "html": "<div class=\"ds-mode-group\"><button type=\"button\" class=\"ds-mode\" aria-pressed=\"true\">单人练习</button><button type=\"button\" class=\"ds-mode\" aria-pressed=\"false\">双人竞速</button></div>",
+      "css": ".ds-mode-group{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ds-mode{border:0;padding:12px 6px;border-radius:8px;background:#eef1f7;color:var(--navy,#1c3155);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:74px;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:14px;cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out;}.ds-mode[aria-pressed=\"true\"]{background:var(--navy,#1c3155);color:#fff}.ds-mode:hover{background:#dce5f4;color:var(--navy,#1c3155)}.ds-mode[aria-pressed=\"true\"]:hover{background:#2b456f;color:#fff}.ds-mode:focus-visible{outline:3px solid #376edc;outline-offset:4px;}.ds-mode:disabled{opacity:.55;cursor:default}@media(max-width:1000px){.ds-mode{flex-direction:row;min-height:48px}}@media(prefers-reduced-motion:reduce){.ds-mode{transition:none}}"
+    },
+    {
+      "name": "答案选项",
+      "kind": "button",
+      "refersTo": "answer-option",
+      "description": "宽触控答案行，保留选中与正确状态，并在提交后保持文字不透明。",
+      "html": "<button type=\"button\" class=\"ds-answer\"><span class=\"ds-letter\">A.</span><span class=\"ds-answer-content\">选项内容</span><kbd class=\"ds-key\">1</kbd></button>",
+      "css": ".ds-answer{display:flex;align-items:center;gap:14px;text-align:left;width:100%;min-height:60px;background:#f4f7fb;color:#142337;border:1px solid #dbe3f0;border-radius:9px;padding:14px 16px;font-family:\"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans CJK SC\", system-ui, sans-serif;font-size:18px;line-height:1.7;touch-action:none;cursor:pointer;transition:background-color 160ms ease-out,color 160ms ease-out;}.ds-answer:hover:not(:disabled){background:#e7eefb;border-color:#7a9bdd}.ds-answer:focus-visible{outline:3px solid #376edc;outline-offset:4px;}.ds-answer:disabled{opacity:1;cursor:default}.ds-answer.ds-chosen{background:#e4ecff;border-color:var(--blue,#2454ce)}.ds-answer.ds-correct{background:#ebf6ee;border-color:#278052}.ds-letter{align-self:flex-start;color:var(--muted,#56647b);font-weight:600}.ds-answer-content{flex:1;overflow-wrap:anywhere}.ds-key{font-family:inherit;color:#5c6c84;font-size:11px;min-width:21px;text-align:center}@media(max-width:1000px){.ds-answer{padding:13px;font-size:17px}.ds-key{display:none}}@media(prefers-reduced-motion:reduce){.ds-answer{transition:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "课时路线",
+    "overview": "Quiz 用沉稳的深蓝建立方向，用白色工作区域承载可选择的内容，以暖橙色突出下一步行动。界面面向课堂电脑、平板与同屏作答：先看清内容和当前状态，再完成操作。中文短句、标准控件和足够的触控面积构成它的日常语气。\n\n视觉秩序来自文字层级、间距、分隔线与色块。按钮和容器保持平面，轮廓适度圆润；图标使用 Phosphor SVG 配合文字。当前记录提取自本地开发预览的实际 CSS 与 React 组件，描述已实现的视觉系统，不代表真实题源已验证或产品已经公开发布。",
+    "keyCharacteristics": [
+      "深蓝导航、冷白画布、白色工作区域与暖橙行动按钮。",
+      "用户确认的中文系统无衬线，标题与正文共用字族。",
+      "标准表单、清楚的选中状态与适合触控的行高。",
+      "双方以姓名、左右位置和蓝橙色共同区分。",
+      "状态切换短暂淡入，减少动态时停止动画。"
+    ],
+    "rules": [
+      {
+        "name": "The State Has Words Rule",
+        "body": "颜色必须伴随姓名、位置、文字、复选标记或进度数值；不让颜色单独承担身份和答案状态。",
+        "section": "colors"
+      },
+      {
+        "name": "The One Reading Voice Rule",
+        "body": "功能标题、正文和操作共用用户确认的中文系统无衬线，通过字号、字重和间距区分职责。",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Task Rule",
+        "body": "课堂任务控件以平面色块和清楚轮廓表达状态，不为已有按钮或工作区域添加装饰性投影。",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** 用深蓝建立导航和选中状态，用暖橙标出主要行动。",
+      "**Do** 保持中文短句、标准表单和可读的辅助文字。",
+      "**Do** 用姓名、位置、文字和标记补足颜色信息。",
+      "**Do** 为触控、键盘聚焦、长文本换行和减少动态保留现有支持。",
+      "**Do** 在开发样题界面与记录中保留明确的开发标识。"
+    ],
+    "donts": [
+      "**Don't** 为当前平面任务控件添加装饰性投影、渐变或位移反馈。",
+      "**Don't** 用装饰性眉题、图标字体或字符拼成的图标代替有意义的内容与 Phosphor SVG。",
+      "**Don't** 将已提交的答案内容变淡，或仅凭颜色说明答案与玩家身份。",
+      "**Don't** 将当前预览的视觉完成度表述为整册内容验证完成或公开发布。"
+    ]
+  }
+}
