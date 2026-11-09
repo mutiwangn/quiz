@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowRight, BookOpen, CheckCircle, ClockCounterClockwise } from '@phosphor-icons/react';
 import { createRound, settleRound, submitAnswer, summarizeRound, type Round } from '../shared/round';
 import type { Catalog, QuestionBatch } from '../shared/types';
+import { selectedLessonNames } from '../shared/catalog';
 import { isPreview, loadCatalog, prepareBatch } from './api';
 import Setup, { type Settings } from './Setup';
 import { Results, RoundScreen } from './Play';
@@ -64,7 +65,7 @@ export default function App() {
     try {
       const prepared = await prepareBatch({ catalogId: catalog.id, lessonIds: selected, kinds: settings.kinds, count: settings.count }, catalog, controller.signal);
       if (controller.signal.aborted) return;
-      lessonNames.current = catalog.units.flatMap(u => u.lessons.filter(l => selected.includes(l.id)).map(l => `${u.name} · ${l.name}`));
+      lessonNames.current = selectedLessonNames(catalog, selected);
       setBatch(prepared); setPage('prepared');
     } catch (err) {
       if (!controller.signal.aborted) setError(err instanceof Error ? err.message : '题目准备失败，请重试。');
@@ -83,10 +84,13 @@ export default function App() {
     if (round?.endedAt === null) setRound(null);
     cancel(); setPage(target);
   };
+  const stageKey = `${page}:${busy ? 'preparing' : 'ready'}:${round?.id ?? ''}:${round?.endedAt ?? ''}`;
   return <>
     <header className="app-header"><button className="brand" onClick={() => navigate('setup')} aria-label="Quiz 科学答题，返回选课"><strong>Quiz</strong><span>科学答题</span></button><nav aria-label="主导航"><button onClick={() => navigate('setup')} aria-current={page !== 'history' ? 'page' : undefined}><BookOpen size={20} aria-hidden="true" />开始练习</button><button onClick={() => navigate('history')} aria-current={page === 'history' ? 'page' : undefined}><ClockCounterClockwise size={20} aria-hidden="true" />本机成绩</button></nav></header>
     {isPreview && <div className="preview-banner"><strong>开发预览</strong> · 使用少量样题验证操作，整册实时内容尚未接通。</div>}
+    <div key={stageKey} className="surface-transition">
     {page === 'history' ? <History onBack={() => setPage('setup')} /> : page === 'round' && round ? round.endedAt !== null ? <Results round={round} saveMessage={saved?.id === round.id ? saved.message : ''} onAgain={prepare} onSetup={() => setPage('setup')} /> : <RoundScreen key={round.id} round={round} now={now} onAnswer={answer} onEnd={() => { if (window.confirm('提前结束并结算当前成绩？')) setRound(r => r ? { ...settleRound(r, Date.now()), endedAt: Math.min(Date.now(), r.deadline ?? Infinity) } : r); }} /> : page === 'prepared' && batch ? <main className="ready-layout"><CheckCircle className="ready-icon" size={52} weight="duotone" aria-hidden="true" /><h1>准备好了</h1><p>{batch.questions.length} 道题已加载完成</p><div className="ready-range">{lessonNames.current.join('；')}</div><p>{settings.mode === 'duel' ? `${settings.players[0]}在左，${settings.players[1]}在右。开始后倒计时 ${settings.seconds / 60} 分钟。` : `${settings.players[0]}，按自己的节奏作答。`}</p><button className="primary-button" onClick={begin}>{settings.mode === 'duel' ? '开始竞速' : '进入练习'}<ArrowRight size={22} aria-hidden="true" /></button><button className="text-button" onClick={() => setPage('setup')}>返回调整</button></main> : catalog ? <Setup catalog={catalog} selected={selected} unitId={unitId} settings={settings} setSelected={setSelected} setUnitId={setUnitId} setSettings={setSettings} onPrepare={prepare} onCancel={cancel} busy={busy} error={error} /> : <main className="catalog-state"><h1>{catalogLoading ? '正在加载课时…' : '课时暂时无法加载'}</h1><p role={catalogLoading ? 'status' : 'alert'}>{catalogLoading ? '马上就能选择今天的练习范围。' : error}</p>{!catalogLoading && <button className="primary-button" onClick={() => setCatalogAttempt(n => n + 1)}>重新加载</button>}</main>}
+    </div>
     <footer className="app-footer">Quiz · 科学答题<span>让每一次思考，都有回响。</span></footer>
   </>;
 }

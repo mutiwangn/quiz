@@ -1,5 +1,6 @@
 import { ArrowRight, CheckCircle, Users, User } from '@phosphor-icons/react';
 import type { Catalog, Mode, QuestionKind } from '../shared/types';
+import { selectedLessonNames } from '../shared/catalog';
 
 export interface Settings { mode: Mode; count: number; kinds: QuestionKind[]; players: [string, string]; seconds: number }
 interface Props {
@@ -41,7 +42,7 @@ export default function Setup({ catalog, selected, unitId, settings, setSelected
         </div>
         <div className="selection-summary"><span><CheckCircle size={20} weight="fill" aria-hidden="true" />已选 <strong>{selected.length}</strong> 个课时</span><button type="button" className="text-button" disabled={selected.length === 0 || busy} onClick={() => setSelected([])}>清空选择</button></div>
       </div>
-      {selected.length > 0 && <div className="selected-range"><strong>本局范围</strong><p>{catalog.units.flatMap(u => u.lessons.filter(l => selected.includes(l.id)).map(l => `${u.name} · ${l.name}`)).join('；')}</p></div>}
+      {selected.length > 0 && <div className="selected-range"><strong>本局范围</strong><p>{selectedLessonNames(catalog, selected).join('；')}</p></div>}
     </section>
     <aside className="prepare-sidebar">
       <form className="prepare-sheet" onSubmit={event => { event.preventDefault(); onPrepare(); }}>

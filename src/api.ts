@@ -5,8 +5,14 @@ export const isPreview = import.meta.env.DEV && new URLSearchParams(location.sea
 const base = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 
 async function requestJSON(path: string, signal: AbortSignal, body?: unknown): Promise<unknown> {
-  const response = await fetch(base + path, { method: body ? 'POST' : 'GET', signal,
-    headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
+  let response: Response;
+  try {
+    response = await fetch(base + path, { method: body ? 'POST' : 'GET', signal,
+      headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
+  } catch (error) {
+    if (signal.aborted) throw error;
+    throw new Error('暂时无法准备题目，请检查网络后重试。');
+  }
   const data = await response.json().catch(() => null);
   if (!response.ok) throw new Error(data?.error?.message ?? '暂时无法准备题目，请稍后重试。');
   return data;

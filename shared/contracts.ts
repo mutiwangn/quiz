@@ -12,6 +12,7 @@ export const questionSchema = z.object({
   prompt: text, images: z.array(image).max(10), choices: z.array(choice).min(2).max(4),
   answerId: id, explanation: z.string().max(12000),
 }).refine(q => unique(q.choices.map(c => c.id)) && q.choices.some(c => c.id === q.answerId), '答案必须对应唯一选项')
+  .refine(q => unique(q.choices.map(c => `${c.text.replace(/\s/g, '')}|${c.image?.url ?? ''}`)), '不能有无法区分的选项')
   .refine(q => q.kind !== 'boolean' || q.choices.length === 2, '判断题必须有两个选项');
 export const catalogSchema = z.object({
   id, title: text, edition: text, grade: z.number().int().min(1).max(12), term: text,

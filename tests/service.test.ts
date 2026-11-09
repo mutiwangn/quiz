@@ -38,6 +38,7 @@ describe('取题 HTTP 服务', () => {
     ['答案缺失', { ...question, answerId: 'c' }],
     ['课时不符', { ...question, lessonIds: ['other'] }],
     ['题型不符', { ...question, kind: 'boolean' }],
+    ['可见选项重复', { ...question, choices: [{ id: 'a', text: '无色' }, { id: 'b', text: '无色' }] }],
   ])('拒收%s，响应不泄露凭据', async (_name, badQuestion) => {
     const fetcher: typeof fetch = async input => Response.json(String(input).endsWith('/catalog') ? catalog : { id: 'batch', catalogId: 'book', origin: 'live', preparedAt: '2026-11-09T00:00:00Z', questions: [badQuestion] });
     const response = await createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'secret-test' }, fetcher).fetch(batchRequest());

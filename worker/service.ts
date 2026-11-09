@@ -51,6 +51,8 @@ export function createService(env: ServiceEnv, fetcher: typeof fetch = fetch) {
       if (path !== '/api/batches') return json({ error: { code: 'NOT_FOUND', message: '页面不存在。' } }, 404);
       if (request.method !== 'POST') return json({ error: { code: 'METHOD_NOT_ALLOWED', message: '请从准备页面重新开始。' } }, 405);
       if (env.RATE_LIMITER && !(await env.RATE_LIMITER.limit({ key: request.headers.get('CF-Connecting-IP') ?? 'unknown' })).success) {
+        headers['Retry-After'] = '60';
+        headers['Access-Control-Expose-Headers'] = 'Retry-After';
         return json({ error: { code: 'RATE_LIMITED', message: '准备次数过于频繁，请稍等一分钟后重试。' } }, 429);
       }
       const body = await request.text();

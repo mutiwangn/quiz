@@ -7,6 +7,13 @@ export const percentage = (value: number | null) => value === null ? '—' : `${
 export const clockText = (ms: number) => `${Math.floor(Math.max(0, ms) / 60000).toString().padStart(2, '0')}:${Math.floor(Math.max(0, ms) / 1000 % 60).toString().padStart(2, '0')}`;
 const keys = [['a', 's', 'd', 'f'], ['j', 'k', 'l', ';']];
 
+function AnswerContent({ question, choiceId }: { question: Question; choiceId: string }) {
+  const index = question.choices.findIndex(choice => choice.id === choiceId);
+  const choice = question.choices[index];
+  if (!choice) return <span>未作答</span>;
+  return <span className="answer-content"><span>{String.fromCharCode(65 + index)}. {choice.text || choice.image?.alt || '配图选项'}</span>{choice.image && <img className="choice-image" src={choice.image.url} alt={choice.image.alt || `选项 ${String.fromCharCode(65 + index)} 配图`} />}</span>;
+}
+
 function ScoreLine({ score }: { score: PlayerScore }) {
   return <dl className="score-line"><div><dt>已答</dt><dd>{score.answered}<small> 题</small></dd></div><div><dt>答对</dt><dd>{score.correct}<small> 题</small></dd></div><div><dt>正确率</dt><dd>{percentage(score.accuracy)}</dd></div></dl>;
 }
@@ -15,15 +22,16 @@ function QuestionPanel({ question, player, number, total, duel, index, onAnswer 
   const answer = question && player.answers.find(a => a.questionId === question.id);
   const lastTouch = useRef(-Infinity);
   return <section className={`player-panel player-${index + 1}`} aria-label={`${player.name}作答`}>
-    <div className="player-heading"><h2>{player.name}</h2><span>{question ? `第 ${number} / ${total} 题` : `${total} / ${total} 题`}</span></div>
+    <div className="player-heading"><h2>{player.name}</h2><div className="question-metadata">{question && <span>{question.kind === 'single' ? '单选题' : '判断题'}</span>}<span>{question ? `第 ${number} / ${total} 题` : `${total} / ${total} 题`}</span></div></div>
     <progress value={player.answers.length} max={total} aria-label={`${player.name}答题进度`} />
-    {question ? <><div className="question-meta">{question.kind === 'single' ? '单选题' : '判断题'}</div><h3 className="question-prompt">{question.prompt}</h3>
+    {question ? <><h3 className="question-prompt">{question.prompt}</h3>
       {question.images.map((image, n) => <img className="question-image" src={image.url} alt={image.alt} key={`${image.url}-${n}`} />)}
       <div className="answer-options">{question.choices.map((choice, i) => <button type="button" key={choice.id} disabled={Boolean(answer)} className={`answer-option ${answer?.choiceId === choice.id ? 'chosen' : ''} ${answer && question.answerId === choice.id ? 'correct-answer' : ''}`} onPointerUp={event => { if (event.pointerType === 'touch') { event.preventDefault(); lastTouch.current = performance.now(); onAnswer(player.id, question.id, choice.id); } }} onClick={event => { if (event.detail && performance.now() - lastTouch.current < 750) return; onAnswer(player.id, question.id, choice.id); }}>
         <span className="choice-letter">{String.fromCharCode(65 + i)}.</span><span>{choice.text}{choice.image && <img className="choice-image" src={choice.image.url} alt={choice.image.alt} />}</span><kbd>{duel ? keys[index][i].toUpperCase() : i + 1}</kbd>
       </button>)}</div>
       {answer && !duel && <div className={`answer-feedback ${answer.choiceId === question.answerId ? 'right' : 'wrong'}`} role="status">
-        <strong>{answer.choiceId === question.answerId ? <CheckCircle size={22} aria-hidden="true" /> : <XCircle size={22} aria-hidden="true" />}{answer.choiceId === question.answerId ? '答对了' : '再想一想'} · 正确答案：{question.choices.find(c => c.id === question.answerId)?.text}</strong>
+        <strong>{answer.choiceId === question.answerId ? <CheckCircle size={22} aria-hidden="true" /> : <XCircle size={22} aria-hidden="true" />}{answer.choiceId === question.answerId ? '答对了' : '再想一想'}</strong>
+        <div className="feedback-answer">正确答案：<AnswerContent question={question} choiceId={question.answerId} /></div>
         <p>{question.explanation || '本题暂无解析。'}</p>
       </div>}
     </> : <div className="player-waiting"><CheckCircle size={44} weight="duotone" aria-hidden="true" /><h3>全部完成</h3><p>等待同伴完成，或计时结束。</p></div>}
@@ -67,6 +75,14 @@ export function Results({ round, saveMessage, onAgain, onSetup }: { round: Round
     <div className={`result-scores ${round.mode}`}>{summary.players.map((player, i) => <section className={`result-player player-${i + 1}`} key={player.id}><h2>{player.name}</h2><ScoreLine score={player} /></section>)}</div>
     <p className="save-message" role="status">{saveMessage || '正在保存本机成绩…'}</p>
     <div className="result-actions"><button className="primary-button" onClick={onAgain}>再来一局<ArrowRight size={20} aria-hidden="true" /></button><button className="secondary-button" onClick={onSetup}>调整课时</button></div>
-    <section className="review-sheet"><h2>回顾这一局</h2>{round.questions.map((question, i) => <details key={question.id}><summary><span>第 {i + 1} 题</span>{question.prompt}</summary><div className="review-body"><p><strong>正确答案：</strong>{question.choices.find(c => c.id === question.answerId)?.text}</p>{round.players.map(p => { const answer = p.answers.find(a => a.questionId === question.id); return <p key={p.id}>{p.name}：{answer ? question.choices.find(c => c.id === answer.choiceId)?.text : '未作答'}{answer ? answer.choiceId === question.answerId ? '（答对）' : '（答错）' : ''}</p>; })}<p>{question.explanation || '本题暂无解析。'}</p></div></details>)}</section>
+    <section className="review-sheet"><h2>回顾这一局</h2>{round.questions.map((question, i) => <details key={question.id}><summary><span>第 {i + 1} 题</span>{question.prompt}</summary><div className="review-body">
+      {question.images.map((image, n) => <img className="question-image" src={image.url} alt={image.alt} key={`${image.url}-${n}`} />)}
+      <div className="review-answer"><strong>正确答案：</strong><AnswerContent question={question} choiceId={question.answerId} /></div>
+      {round.players.map(player => {
+        const answer = player.answers.find(a => a.questionId === question.id);
+        return <div className="review-answer" key={player.id}>{player.name}：{answer ? <><AnswerContent question={question} choiceId={answer.choiceId} /><span>{answer.choiceId === question.answerId ? '（答对）' : '（答错）'}</span></> : '未作答'}</div>;
+      })}
+      <p>{question.explanation || '本题暂无解析。'}</p>
+    </div></details>)}</section>
   </main>;
 }
