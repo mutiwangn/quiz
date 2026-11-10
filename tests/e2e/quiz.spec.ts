@@ -41,6 +41,8 @@ test('无需昵称，双人做完当前批题仍等到限时结束，按总分�
   await expect(page.getByRole('heading', { name: '本局平局' })).toHaveCount(0);
   await expect(page.getByRole('timer')).toBeVisible();
   await expect(page.getByText('总分', { exact: true })).toHaveCount(2);
+  await expect(page.getByRole('alert')).toHaveText('后续题目暂时不足。本局继续计时，已得分保留。可以等待本局结束，或放弃本局后调整课时。');
+  await expect(page.getByRole('button', { name: '重试加载新题' })).toHaveCount(0);
   await page.clock.fastForward(120000);
   await expect(page.getByRole('heading', { name: '本局平局' })).toBeVisible();
   await expect(page.getByText('已保存到本机成绩。')).toBeVisible();

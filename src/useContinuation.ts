@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { appendQuestions, type Round } from '../shared/round';
 import type { BatchRequest, Catalog } from '../shared/types';
-import { PreparationError, prepareBatch } from './api';
+import { prepareBatch } from './api';
+import { PreparationError } from './preparationError';
 
-export interface Continuation { status: 'idle' | 'loading' | 'error'; message: string; retryAt: number }
-const idle: Continuation = { status: 'idle', message: '', retryAt: 0 };
+export interface Continuation { status: 'idle' | 'loading' | 'error'; message: string; retryAt: number; canRetry: boolean }
+const idle: Continuation = { status: 'idle', message: '', retryAt: 0, canRetry: false };
 
 export function useContinuation(round: Round | null, catalog: Catalog | null, request: BatchRequest | null, setRound: Dispatch<SetStateAction<Round | null>>) {
   const [state, setState] = useState<Continuation>(idle);
@@ -23,7 +24,7 @@ export function useContinuation(round: Round | null, catalog: Catalog | null, re
     const controller = new AbortController(); active.current = controller;
     attempted.current = `${current.id}:${current.questions.length}`;
     const timeout = setTimeout(() => controller.abort('timeout'), 45000);
-    setState({ status: 'loading', message: '正在准备后续题目…', retryAt: 0 });
+    setState({ status: 'loading', message: '正在准备后续题目…', retryAt: 0, canRetry: false });
     try {
       const next = await prepareBatch({ ...input, excludeIds: current.questions.map(q => q.id) }, book, controller.signal);
       const live = latest.current.round;
@@ -34,7 +35,10 @@ export function useContinuation(round: Round | null, catalog: Catalog | null, re
     } catch (error) {
       if (controller.signal.aborted && controller.signal.reason !== 'timeout') return;
       const detail = controller.signal.reason === 'timeout' ? '准备后续题目超时，请重试。' : error instanceof Error ? error.message : '后续题目未能加载，请重试。';
-      setState({ status: 'error', message: detail, retryAt: error instanceof PreparationError ? error.retryAt : 0 });
+      const code = error instanceof PreparationError ? error.code : '';
+      const shortage = ['PREVIEW_EXHAUSTED', 'INSUFFICIENT_QUESTIONS'].includes(code);
+      const message = shortage ? '后续题目暂时不足。本局继续计时，已得分保留。可以等待本局结束，或放弃本局后调整课时。' : `${detail} 本局继续计时，已得分保留。`;
+      setState({ status: 'error', message, retryAt: error instanceof PreparationError ? error.retryAt : 0, canRetry: code !== 'PREVIEW_EXHAUSTED' });
     } finally {
       clearTimeout(timeout);
       if (active.current === controller) active.current = null;

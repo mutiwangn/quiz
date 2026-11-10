@@ -3,6 +3,7 @@ import type { Catalog } from '../shared/types.ts';
 import { readPublicCatalog } from './catalog.ts';
 import { readLiveBatch } from './source.ts';
 import { ServiceError } from './errors.ts';
+import { SourceAccess } from './sourceAccess.ts';
 
 export interface ServiceEnv {
   RATE_LIMITER?: { limit(input: { key: string }): Promise<{ success: boolean }> };
@@ -17,8 +18,7 @@ export interface ServiceEnv {
 }
 const notConfigured = () => new ServiceError('SOURCE_NOT_CONFIGURED', 503, '题目暂时未准备好，请稍后重试。');
 
-export function createService(env: ServiceEnv, fetcher: typeof fetch = fetch) {
-  let sourcePaused = env.SOURCE_ACCESS_BLOCKED === '1';
+export function createService(env: ServiceEnv, fetcher: typeof fetch = fetch, sourceAccess = new SourceAccess()) {
   async function upstream(path: string, init?: RequestInit): Promise<unknown> {
     if (!env.GATEWAY_URL || !env.GATEWAY_TOKEN) throw notConfigured();
     const url = new URL(env.GATEWAY_URL.replace(/\/$/, '') + path);
@@ -62,19 +62,20 @@ export function createService(env: ServiceEnv, fetcher: typeof fetch = fetch) {
       const parsed = batchRequestSchema.safeParse(raw);
       if (!parsed.success) return json({ error: { code: 'INVALID_REQUEST', message: '请选择课时、题型和 1～30 道题。' } }, 400);
       const input = parsed.data;
-      if (sourcePaused) throw new ServiceError('SOURCE_ACCOUNT_LOCKED', 503, '题目服务已暂停，请联系老师处理后再开始。');
+      if (env.SOURCE_ACCESS_BLOCKED === '1') sourceAccess.pause();
+      sourceAccess.assertAvailable();
       const catalog = await getCatalog();
       if (catalog.id !== input.catalogId || input.lessonIds.some(id => !catalog.units.some(u => u.lessons.some(l => l.id === id)))) {
         return json({ error: { code: 'INVALID_RANGE', message: '所选课时已变化，请刷新后重选。' } }, 400);
       }
-      const rawBatch = env.SOURCE_SEARCH_ENDPOINT ? await readLiveBatch({ endpoint: env.SOURCE_SEARCH_ENDPOINT, cookie: env.SOURCE_SESSION_COOKIE ?? '' }, input, fetcher)
+      const rawBatch = env.SOURCE_SEARCH_ENDPOINT ? await readLiveBatch({ endpoint: env.SOURCE_SEARCH_ENDPOINT, cookie: env.SOURCE_SESSION_COOKIE ?? '' }, input, fetcher, sourceAccess)
         : await upstream('/batches', { method: 'POST', body: JSON.stringify(input) });
       const batch = validateBatch(rawBatch, input, catalog);
       if (batch.origin !== 'live') throw new Error('真实模式不能使用样题');
       return json(batch);
     } catch (error) {
       if (error instanceof ServiceError) {
-        if (error.code === 'SOURCE_ACCOUNT_LOCKED') sourcePaused = true;
+        if (error.code === 'SOURCE_ACCOUNT_LOCKED') sourceAccess.pause();
         return json({ error: { code: error.code, message: error.message } }, error.status);
       }
       if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return json({ error: { code: 'UPSTREAM_TIMEOUT', message: '准备题目超时，请重试。' } }, 504);

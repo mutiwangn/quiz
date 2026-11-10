@@ -1,13 +1,9 @@
 import { catalogSchema, validateBatch } from '../shared/contracts';
 import type { BatchRequest, Catalog, QuestionBatch } from '../shared/types';
+import { PreparationError } from './preparationError';
 
 export const isPreview = import.meta.env.DEV && new URLSearchParams(location.search).get('preview') === '1';
 const base = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
-
-export class PreparationError extends Error {
-  retryAt: number;
-  constructor(message: string, retryAt: number) { super(message); this.retryAt = retryAt; }
-}
 
 async function requestJSON(path: string, signal: AbortSignal, body?: unknown): Promise<unknown> {
   let response: Response;
@@ -21,7 +17,7 @@ async function requestJSON(path: string, signal: AbortSignal, body?: unknown): P
   const data = await response.json().catch(() => null);
   if (!response.ok) {
     const seconds = response.status === 429 ? Math.max(1, Math.min(300, Number(response.headers.get('Retry-After')) || 60)) : 0;
-    throw new PreparationError(data?.error?.message ?? '暂时无法准备题目，请稍后重试。', seconds ? Date.now() + seconds * 1000 : 0);
+    throw new PreparationError(data?.error?.message ?? '暂时无法准备题目，请稍后重试。', seconds ? Date.now() + seconds * 1000 : 0, data?.error?.code ?? '');
   }
   return data;
 }

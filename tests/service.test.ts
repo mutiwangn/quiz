@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createService } from '../worker/service';
+import worker from '../worker/index';
 import type { Catalog, Question } from '../shared/types';
 
 const catalog: Catalog = { id: 'book', title: '小学科学', edition: '教科版（2024）', grade: 4, term: '上册', origin: 'live', fetchedAt: '2026-11-09T00:00:00.000Z', units: [{ id: 'u1', name: '空气', lessons: [{ id: 'l1', name: '感受空气' }] }] };
@@ -141,5 +142,61 @@ describe('取题 HTTP 服务', () => {
       expect(await response.json()).toMatchObject({ error: { code: 'SOURCE_ACCOUNT_LOCKED' } });
     }
     expect(sourceCalls).toBe(1);
+  });
+  it('同批并行任务收到锁定后，不再发起后续页或题型请求', async () => {
+    let sourceCalls = 0;
+    let release!: () => void;
+    const pending = new Promise<void>(resolve => { release = resolve; });
+    const book = { ...catalog, units: [{ ...catalog.units[0], lessons: ['l1', 'l2'].map(id => ({ id, name: id })) }] };
+    const fetcher: typeof fetch = async input => {
+      if (String(input).endsWith('/catalog')) return Response.json(book);
+      sourceCalls++;
+      if (sourceCalls === 1) return new Response('您的账号已被锁定，请联系客服。');
+      await pending;
+      return new Response('<select onchange="goPage"><option value="1">1</option><option value="2">2</option></select>');
+    };
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/ques/partialques', SOURCE_SESSION_COOKIE: 'session=test' }, fetcher);
+    const response = await service.fetch(new Request('https://api.test/api/batches', { method: 'POST', body: JSON.stringify({ catalogId: 'book', lessonIds: ['l1', 'l2'], kinds: ['single'], count: 2 }) }));
+    expect(response.status).toBe(503);
+    release();
+    await new Promise<void>(resolve => setImmediate(resolve));
+    expect(sourceCalls).toBe(2);
+  });
+  it.each(['【答案】B', '免费查看次数已用完，请购买后查看'])('完整详情的标准答案受限或冲突时拒绝题包：%s', async answer => {
+    const exercise = '<fieldset class="quesborder" id="valid-question" data-cate="1"><div class="pt1">空气通常是什么颜色的？</div><div class="pt2"><div class="selectoption"><label class="s">A．无色</label><label>B．蓝色</label></div></div>';
+    const fetcher: typeof fetch = async input => {
+      const url = new URL(String(input));
+      if (url.pathname === '/catalog') return Response.json(catalog);
+      if (url.pathname.startsWith('/ques/detail/')) return new Response(`${exercise}<div class="pt11">${answer}</div></fieldset>`);
+      return new Response(`<li>${exercise}</fieldset><div class="fieldtip"><a href="/ques/detail/valid-question">解析</a></div></li><script>if ('True' == 'True') { $("#divConfuseTips").show(); }</script>`);
+    };
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/ques/partialques', SOURCE_SESSION_COOKIE: 'session=test' }, fetcher);
+    const response = await service.fetch(batchRequest());
+    expect(response.status).toBe(503);
+    expect(await response.json()).toMatchObject({ error: { code: 'SOURCE_TEXT_INCOMPLETE' } });
+  });
+  it.each(['2<sup>3</sup>cm<sup>3</sup>', 'O<sub>2</sub>'])('无法可靠表达的上下标不压平成错误题干：%s', async notation => {
+    const fetcher: typeof fetch = async input => String(input).endsWith('/catalog') ? Response.json(catalog) : new Response(`<fieldset class="quesborder" id="valid-question" data-cate="1"><div class="pt1">观察${notation}的实验结果。</div><div class="pt2"><div class="selectoption"><label class="s">A．结果一</label><label>B．结果二</label></div></div></fieldset>`);
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/ques/partialques', SOURCE_SESSION_COOKIE: 'session=test' }, fetcher);
+    expect((await service.fetch(batchRequest())).status).toBe(422);
+  });
+  it('不把明确隐藏的干扰文字和选项混入可见题目', async () => {
+    const fetcher: typeof fetch = async input => String(input).endsWith('/catalog') ? Response.json(catalog) : new Response('<fieldset class="quesborder" id="valid-question" data-cate="1"><div class="pt1">空气<span style="display: none">秘密干扰字</span>通常是什么颜色的？<span hidden>隐藏文字</span></div><div class="pt2"><div class="selectoption"><label class="s">A．无色<span style="visibility:hidden">干扰文字</span></label><label>B．蓝色</label></div></div></fieldset>');
+    const service = createService({ GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/ques/partialques', SOURCE_SESSION_COOKIE: 'session=test' }, fetcher);
+    const response = await service.fetch(batchRequest());
+    expect(await response.json()).toMatchObject({ questions: [{ prompt: '空气通常是什么颜色的？', choices: [{ text: '无色' }, { text: '蓝色' }] }] });
+  });
+  it('真实 Worker 入口在后续请求中保留锁定状态', async () => {
+    let sourceCalls = 0;
+    const mock = vi.spyOn(globalThis, 'fetch').mockImplementation(async input => {
+      if (String(input).endsWith('/catalog')) return Response.json(catalog);
+      sourceCalls++;
+      return new Response('您的账号已被锁定，请联系客服。');
+    });
+    try {
+      const env = { GATEWAY_URL: 'https://gateway.test', GATEWAY_TOKEN: 'test', SOURCE_SEARCH_ENDPOINT: 'https://source.test/ques/partialques', SOURCE_SESSION_COOKIE: 'session=test' };
+      for (let i = 0; i < 2; i++) expect((await worker.fetch(batchRequest(), env)).status).toBe(503);
+      expect(sourceCalls).toBe(1);
+    } finally { mock.mockRestore(); }
   });
 });
