@@ -1,5 +1,13 @@
 # 首次发布
 
+## 在线体验构建
+
+用户于 2026-11-11 要求通过 GitHub.io 体验后反馈。单独的 `experience` 构建可先发布为明确标识的开发预览，使用少量原创样题，不连接题源、不消耗源站额度，不作为整册真实内容发布。真实取题后台继续暂停。
+
+运行 `npm run build:experience`，静态文件输出到被忽略的 `.tools/pages-experience/`。将这一目录与 `.nojekyll` 发布到 `codex/pages-experience` 分支，再将 Pages 来源设置为该分支根目录；入口为 `https://mutiwangn.github.io/quiz/`。该分支只存放构建产物，代码仍在 `codex/build-quiz` 草稿 PR 中。
+
+普通 `npm run build` 仍是正式构建，不包含开发样题；网址中的 `?preview=1` 不能开启正式构建的样题模式。首次正式实时版发布仍须满足以下全部条件，并切换到经过覆盖检查的 Pages Actions 工作流。
+
 ## 必要条件
 
 1. 接口免费访问或试用权限明确；确认教科版（2024）四上课时筛选、完整题干、答案、图片可用范围与额度。

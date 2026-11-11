@@ -2,7 +2,8 @@ import { catalogSchema, validateBatch } from '../shared/contracts';
 import type { BatchRequest, Catalog, QuestionBatch } from '../shared/types';
 import { PreparationError } from './preparationError';
 
-export const isPreview = import.meta.env.DEV && new URLSearchParams(location.search).get('preview') === '1';
+export const isPreview = import.meta.env.MODE === 'experience'
+  || import.meta.env.DEV && new URLSearchParams(location.search).get('preview') === '1';
 const base = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 
 async function requestJSON(path: string, signal: AbortSignal, body?: unknown): Promise<unknown> {
@@ -22,7 +23,7 @@ async function requestJSON(path: string, signal: AbortSignal, body?: unknown): P
   return data;
 }
 export async function loadCatalog(signal: AbortSignal): Promise<Catalog> {
-  if (isPreview && import.meta.env.DEV) return (await import('./preview')).previewCatalog;
+  if (isPreview) return (await import('./preview')).previewCatalog;
   const parsed = catalogSchema.safeParse(await requestJSON('/api/catalog', signal));
   if (!parsed.success) throw new Error('课时暂时不可用，请稍后重试。');
   const catalog = parsed.data;
@@ -30,7 +31,7 @@ export async function loadCatalog(signal: AbortSignal): Promise<Catalog> {
   return catalog;
 }
 export async function prepareBatch(input: BatchRequest, catalog: Catalog, signal: AbortSignal): Promise<QuestionBatch> {
-  const raw = isPreview && import.meta.env.DEV ? await (await import('./preview')).previewBatch(input) : await requestJSON('/api/batches', signal, input);
+  const raw = isPreview ? await (await import('./preview')).previewBatch(input) : await requestJSON('/api/batches', signal, input);
   signal.throwIfAborted();
   let batch: QuestionBatch;
   try { batch = validateBatch(raw, input, catalog); } catch { throw new Error('本次题目未通过检查，请调整范围或重试。'); }

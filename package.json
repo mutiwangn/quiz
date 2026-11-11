@@ -7,6 +7,7 @@
     "dev": "vite --host 127.0.0.1",
     "dev:api": "node --experimental-strip-types scripts/dev-api.ts",
     "build": "tsc -b && vite build",
+    "build:experience": "tsc -b && vite build --mode experience --outDir .tools/pages-experience",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
