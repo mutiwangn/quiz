@@ -1,0 +1,47 @@
+name: Publish whole-book Quiz
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Verify all lessons with live questions
+        run: npm run coverage:live
+        env:
+          QUIZ_API_URL: ${{ vars.QUIZ_API_URL }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-coverage
+          path: coverage/live-coverage.json
+      - run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ vars.QUIZ_API_URL }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: verify-and-build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

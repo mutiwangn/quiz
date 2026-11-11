@@ -1,0 +1,13 @@
+# Copy to .dev.vars; never commit live credentials.
+ALLOWED_ORIGIN=http://127.0.0.1:5173
+CATALOG_ENDPOINT=
+CATALOG_BOOK_ID=
+# The gateway contract is documented in docs/service.md.
+# Optional normalized gateway, independent of the page adapter below.
+GATEWAY_URL=
+GATEWAY_TOKEN=
+# Authorized page access. These values belong only on the backend.
+SOURCE_SEARCH_ENDPOINT=
+SOURCE_SESSION_COOKIE=
+# Set to 1 to stop source requests until the owner resolves access restrictions.
+SOURCE_ACCESS_BLOCKED=0

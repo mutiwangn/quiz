@@ -1,0 +1,212 @@
+{
+  "title": "Quiz 的课堂界面",
+  "question": "推荐清晰的分栏选课与蓝橙双人界面。可以选择此方案、换一种呈现或重新给方案。",
+  "buildPath": {
+    "value": "code",
+    "toggle": false
+  },
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "steer": true,
+  "canon": true,
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "蓝橙课堂竞速",
+      "thesis": "取课时、准备题目、开始作答在一个清晰的工作区完成。",
+      "palette": [
+        "#2454ce",
+        "#ffffff",
+        "#fff6e8",
+        "#e9aa37"
+      ],
+      "materials": [
+        "清晰分栏",
+        "中文无衬线文字"
+      ],
+      "viewport": "蓝色主导航，白色课时清单，橙色开始按钮；双人用蓝橙区分。",
+      "risk": "任务优先，比赛感主要出现在双人作答阶段。",
+      "html": ".impeccable/mocks/decision/assigned.html",
+      "raised": [
+        {
+          "from": "黑白数据场",
+          "raise": "保留数字对齐纪律。"
+        },
+        {
+          "from": "双面曲目单",
+          "raise": "保留双方各自独立的进度。"
+        },
+        {
+          "from": "图像目录墙",
+          "raise": "保留清晰的当前选择聚焦。"
+        },
+        {
+          "from": "辞典页",
+          "raise": "保留课时范围明确的导航标题。"
+        },
+        {
+          "from": "星图",
+          "raise": "保留选中状态的明确对比。"
+        }
+      ]
+    },
+    {
+      "id": "pick",
+      "kind": "pick",
+      "label": "绿色课堂练习",
+      "thesis": "以熟悉的练习工具为基础，强调当前课时与操作状态。",
+      "palette": [
+        "#176b54",
+        "#ffffff",
+        "#f0f7f1",
+        "#e9aa37"
+      ],
+      "materials": [
+        "清晰分栏",
+        "中文无衬线文字"
+      ],
+      "viewport": "绿色导航，左侧单元，右侧课时；练习和对战分开选择。",
+      "risk": "更熟悉，也更接近常见教学工具。",
+      "html": ".impeccable/mocks/decision/pick.html",
+      "kicker": "IMPECCABLE’S PICK"
+    },
+    {
+      "id": "transit",
+      "kind": "challenger",
+      "label": "课时路线",
+      "thesis": "课时按单元顺序排列，已选范围形成清楚的组合。",
+      "palette": [
+        "#1c3155",
+        "#ffffff",
+        "#f4f7fb",
+        "#e9aa37"
+      ],
+      "materials": [
+        "清晰分栏",
+        "中文无衬线文字"
+      ],
+      "viewport": "深蓝导航，彩色单元标记，标准复选框与开始按钮。",
+      "risk": "需要克制线条，避免让选课像读地图。",
+      "html": ".impeccable/mocks/decision/transit.html",
+      "catalogId": "wayfinding-cartography-signage-midnight-transit-diagram",
+      "verdict": "competitive",
+      "case": "课堂能识别单元顺序，保留标准选课控件。"
+    },
+    {
+      "id": "ikeda-datamatics",
+      "kind": "challenger",
+      "catalogId": "ikeda-datamatics",
+      "label": "黑白数据场",
+      "palette": [
+        "#000000",
+        "#ffffff"
+      ],
+      "verdict": "declined",
+      "thesis": "高对比但数据密度不适合小学选课。",
+      "materials": [
+        "参考方向"
+      ],
+      "viewport": "保持标准的课时选择与作答界面。",
+      "risk": "高对比但数据密度不适合小学选课。",
+      "case": "高对比但数据密度不适合小学选课。",
+      "kept": "保留数字对齐纪律。"
+    },
+    {
+      "id": "vernacular-ephemera-cassette-j-card",
+      "kind": "challenger",
+      "catalogId": "vernacular-ephemera-cassette-j-card",
+      "label": "双面曲目单",
+      "palette": [
+        "#234497",
+        "#ffffff"
+      ],
+      "verdict": "declined",
+      "thesis": "双侧有类比，但不如标准练习界面直观。",
+      "materials": [
+        "参考方向"
+      ],
+      "viewport": "保持标准的课时选择与作答界面。",
+      "risk": "双侧有类比，但不如标准练习界面直观。",
+      "case": "双侧有类比，但不如标准练习界面直观。",
+      "kept": "保留双方各自独立的进度。"
+    },
+    {
+      "id": "pop-culture-shelf-streaming-title-card-wall",
+      "kind": "challenger",
+      "catalogId": "pop-culture-shelf-streaming-title-card-wall",
+      "label": "图像目录墙",
+      "palette": [
+        "#15171d",
+        "#ffffff"
+      ],
+      "verdict": "declined",
+      "thesis": "题库没有海报内容，横向目录增加操作。",
+      "materials": [
+        "参考方向"
+      ],
+      "viewport": "保持标准的课时选择与作答界面。",
+      "risk": "题库没有海报内容，横向目录增加操作。",
+      "case": "题库没有海报内容，横向目录增加操作。",
+      "kept": "保留清晰的当前选择聚焦。"
+    },
+    {
+      "id": "rw-lexicon-shoulder-and-plate",
+      "kind": "challenger",
+      "catalogId": "rw-lexicon-shoulder-and-plate",
+      "label": "辞典页",
+      "palette": [
+        "#262521",
+        "#f7efdf"
+      ],
+      "verdict": "declined",
+      "thesis": "文本阅读层级可用，但过密且偏成人。",
+      "materials": [
+        "参考方向"
+      ],
+      "viewport": "保持标准的课时选择与作答界面。",
+      "risk": "文本阅读层级可用，但过密且偏成人。",
+      "case": "文本阅读层级可用，但过密且偏成人。",
+      "kept": "保留课时范围明确的导航标题。"
+    },
+    {
+      "id": "notation-diagram-systems-star-atlas",
+      "kind": "challenger",
+      "catalogId": "notation-diagram-systems-star-atlas",
+      "label": "星图",
+      "palette": [
+        "#16243f",
+        "#fff8dd"
+      ],
+      "verdict": "declined",
+      "thesis": "星图不能承载实际选课操作。",
+      "materials": [
+        "参考方向"
+      ],
+      "viewport": "保持标准的课时选择与作答界面。",
+      "risk": "星图不能承载实际选课操作。",
+      "case": "星图不能承载实际选课操作。",
+      "kept": "保留选中状态的明确对比。"
+    }
+  ],
+  "canonCard": {
+    "kind": "canon",
+    "label": "常规教学工具",
+    "thesis": "使用熟悉的表单、列表和答题按钮。",
+    "palette": [
+      "#ffffff",
+      "#1f2937",
+      "#2563eb"
+    ],
+    "materials": [
+      "常规网页控件"
+    ],
+    "viewport": "顶部标题，分步表单，底部开始。",
+    "risk": "功能清晰，视觉辨识度较低。",
+    "html": ".impeccable/mocks/decision/canon.html"
+  }
+}
